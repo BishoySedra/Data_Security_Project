@@ -17,18 +17,18 @@ namespace SecurityLibrary
         {
 			// throw new NotImplementedException();
 			int i = 0;
-			int j;
 			while (i < plainText.Length)
 			{
-				j = 0;
-				while (j < alphabet.Length)
+				char currentChar = plainText[i];
+				int index = Array.IndexOf(alphabet, currentChar);
+				if (index != -1)
 				{
-					if (alphabet[j] == plainText[i])
-					{
-						encryptedText += alphabet[(j + key) % 26];
-						break;
-					}
-					j++;
+					int newIndex = (index + key) % 26;
+					encryptedText += alphabet[newIndex];
+				}
+				else
+				{
+					encryptedText += currentChar; // If character not found in alphabet, keep it unchanged
 				}
 				i++;
 			}
@@ -41,24 +41,22 @@ namespace SecurityLibrary
 
 			cipherText = cipherText.ToLower();
 			int i = 0;
-			int j;
 			while (i < cipherText.Length)
 			{
-				j = 0;
-				while (j < alphabet.Length)
+				char currentChar = cipherText[i];
+				int index = Array.IndexOf(alphabet, currentChar);
+				if (index != -1)
 				{
-					int res;
-					if (alphabet[j] == cipherText[i])
+					int newIndex = (index - key) % 26;
+					if (newIndex < 0)
 					{
-						res = j - key;
-						if (res < 0)
-						{
-							res = res + 26;
-						}
-						decryptedText += alphabet[res];
-						break;
+						newIndex += 26;
 					}
-					j++;
+					decryptedText += alphabet[newIndex];
+				}
+				else
+				{
+					decryptedText += currentChar; // If character not found in alphabet, keep it unchanged
 				}
 				i++;
 			}

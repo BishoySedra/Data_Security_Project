@@ -30,7 +30,7 @@ namespace SecurityLibrary
             cipherText = cipherText.Replace(" ", "");
 
             // remove numbers
-            cipherText = new string(cipherText.Where(c => !char.IsDigit(c)).ToArray());
+            cipherText = new string(cipherText.Where(c => char.IsLetter(c)).ToArray());
 
             // convert to upperCase
             cipherText = cipherText.ToUpper();
@@ -265,7 +265,7 @@ namespace SecurityLibrary
             plainText = plainText.Replace(" ", "");
 
             // remove numbers
-            plainText = new string(plainText.Where(c => !char.IsDigit(c)).ToArray());
+            plainText = new string(plainText.Where(c => char.IsLetter(c)).ToArray());
 
             // convert to upperCase
             plainText = plainText.ToUpper();

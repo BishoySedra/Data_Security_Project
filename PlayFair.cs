@@ -245,7 +245,7 @@ namespace SecurityLibrary
 
             for (int i = 1; i < resultArr.Length; i++)
             {
-                if (resultArr[i] == 'X' && resultArr[i - 1] == resultArr[i + 1])
+                if (resultArr[i] == 'X' && resultArr[i - 1] == resultArr[i + 1] && i % 2 != 0)
                 {
                     continue;
                 }

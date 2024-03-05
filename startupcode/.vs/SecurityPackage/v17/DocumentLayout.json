@@ -5,6 +5,10 @@
     {
       "AbsoluteMoniker": "D:0:0:{64AFBAE4-208F-4F5D-B9F4-CCA2E71F36E4}|SecurityLibrary\\SecurityLibrary.csproj|N:\\Uni\\Semester 6\\Data Security\\Security Package\\startupcode\\securitylibrary\\mainalgorithms\\hillcipher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{64AFBAE4-208F-4F5D-B9F4-CCA2E71F36E4}|SecurityLibrary\\SecurityLibrary.csproj|solutionrelative:securitylibrary\\mainalgorithms\\hillcipher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4638FC66-5518-485D-A541-D0A6044730B0}|SecurityPackageTest\\SecurityPackageTest.csproj|n:\\uni\\semester 6\\data security\\security package\\startupcode\\securitypackagetest\\hillciphertest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4638FC66-5518-485D-A541-D0A6044730B0}|SecurityPackageTest\\SecurityPackageTest.csproj|solutionrelative:securitypackagetest\\hillciphertest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,8 +18,21 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "HillCipherTest.cs",
+              "DocumentMoniker": "N:\\Uni\\Semester 6\\Data Security\\Security Package\\startupcode\\securitypackagetest\\HillCipherTest.cs",
+              "RelativeDocumentMoniker": "securitypackagetest\\HillCipherTest.cs",
+              "ToolTip": "N:\\Uni\\Semester 6\\Data Security\\Security Package\\startupcode\\securitypackagetest\\HillCipherTest.cs",
+              "RelativeToolTip": "securitypackagetest\\HillCipherTest.cs",
+              "ViewState": "AQIAAHcAAAAAAAAAAAAAAIIAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-03T22:57:38.582Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
@@ -24,7 +41,7 @@
               "RelativeDocumentMoniker": "securitylibrary\\MainAlgorithms\\HillCipher.cs",
               "ToolTip": "N:\\Uni\\Semester 6\\Data Security\\Security Package\\startupcode\\securitylibrary\\MainAlgorithms\\HillCipher.cs",
               "RelativeToolTip": "securitylibrary\\MainAlgorithms\\HillCipher.cs",
-              "ViewState": "AQIAABYBAAAAAAAAAAAIwGwBAAANAAAA",
+              "ViewState": "AQIAAHgAAAAAAAAAAAAowIAAAAAqAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-03-02T18:56:03.731Z",
               "EditorCaption": ""

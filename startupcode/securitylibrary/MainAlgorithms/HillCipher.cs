@@ -395,7 +395,80 @@ namespace SecurityLibrary
 
         public string Decrypt(string cipherText, string key)
         {
-            throw new NotImplementedException();
+            // Variables
+            string capitalCipher = cipherText.ToUpper();
+            string capitalKey = key.ToUpper();
+            int keySize = key.Length;
+            int matrixSize = (int)Math.Sqrt(keySize);
+            List<int> mappedCipherText = new List<int>();
+            List<int> keyNumbers = new List<int>();
+            List<List<int>> keyMatrix = new List<List<int>>();
+            List<List<int>> cipherTextMatrix = new List<List<int>>();
+            string plainText = "";
+            List<List<int>> plain = new List<List<int>>();
+            List<int> cipherTextNumber = new List<int>();
+
+            // Create array holding letters
+            Dictionary<char, int> letters = new Dictionary<char, int>();
+            for (int i = 0; i < 26; i++)
+            {
+                letters[(char)(i + 65)] = i; // maps A -> Z to 0 -> 25
+            }
+
+            Dictionary<int, char> numbers = new Dictionary<int, char>();
+            foreach (var pair in letters)
+            {
+                numbers[pair.Value] = pair.Key;
+            }
+
+            //// Convert key to numbers
+            foreach (char c in capitalKey)
+            {
+                keyNumbers.Add(letters[c]);
+            }
+
+            capitalCipher = Regex.Replace(capitalCipher, @"\s+", ""); // Removes whitespaces, just in case
+
+            foreach (var letter in capitalCipher)
+                cipherTextNumber.Add(letters[letter]);
+
+            //// Split string into equal substrings
+            List<string> matrixColumns = new List<string>();
+
+            for (int i = 0; i < capitalCipher.Length; i += matrixSize)
+            {
+                int length = Math.Min(matrixSize, capitalCipher.Length - i);
+                string newString = capitalCipher.Substring(i, length);
+
+                /*if (length < matrixSize)
+                {
+                    for (int j = 0; j < matrixSize - length; j++)
+                    {
+                        newString += 'X'; // if substring is less than column size, add X
+                    }
+                }*/ // IDK really know if adding 'X' is neccessary or not
+
+                matrixColumns.Add(newString);
+            }
+
+            //// Map substrings
+            
+            // same as in encryption
+            foreach (string str in matrixColumns)
+                foreach (char c in str)
+                    mappedCipherText.Add(letters[c]);
+
+            List<int> plainArr = Decrypt(cipherTextNumber, keyNumbers);
+
+            // Convert numbers to strings
+            foreach (var c in plainArr)
+            {
+                plainText += numbers[c];
+            }
+
+            return plainText;
+
+            //throw new NotImplementedException();
         }
 
         public List<int> Encrypt(List<int> plainText, List<int> key)
@@ -526,7 +599,7 @@ namespace SecurityLibrary
             Dictionary<char, int> letters = new Dictionary<char, int>();
             for (int i = 0; i < 26; i++)
             {
-                letters[(char)(i + 79)] = i; // maps A -> Z to 0 -> 25
+                letters[(char)(i + 65)] = i; // maps A -> Z to 0 -> 25
             }
 
             Dictionary<int, char> numbers = new Dictionary<int, char>();
@@ -569,6 +642,7 @@ namespace SecurityLibrary
             }
 
             //// Map substrings
+            // this is probably uselss, I don't remeber why I wrote it
             foreach (string str in matrixColumns)
                 foreach (char c in str)
                     mappedPlainText.Add(letters[c]);

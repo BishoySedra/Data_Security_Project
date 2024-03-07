@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,45 +8,31 @@ namespace SecurityLibrary
 {
     public class Columnar : ICryptographicTechnique<string, List<int>>
     {
-        public void combinations(int n, int start, List<int> currentList, List<List<int>> result)
-        {
-            if (currentList.Count == n)
-            {
-                result.Add(currentList);
-                return;
-            }
-
-            for (int i = start; i <= n; i++)
-            {
-                currentList.Add(i);
-                combinations(n, i + 1, currentList, result);
-                currentList.Remove(i);
-            }
-        }
-        public List<List<int>> GetPermutations(List<int> list)
+       
+        public List<List<int>> GetPerms(List<int> list)
         {
             if (list.Count == 1)
             {
                 return new List<List<int>> { list };
             }
 
-            var permutations = new List<List<int>>();
+            var perms = new List<List<int>>();
 
-            foreach (var element in list)
+            foreach (var e in list)
             {
-                var remainingList = new List<int>(list);
-                remainingList.Remove(element);
+                var remaining = new List<int>(list);
+                remaining.Remove(e);
 
-                var subPermutations = GetPermutations(remainingList);
+                var subPerms = GetPerms(remaining);
 
-                foreach (var subPermutation in subPermutations)
+                foreach (var subPerm in subPerms)
                 {
-                    subPermutation.Insert(0, element);
-                    permutations.Add(subPermutation);
+                    subPerm.Insert(0, e);
+                    perms.Add(subPerm);
                 }
             }
 
-            return permutations;
+            return perms;
         }
         public List<int> Analyse(string plainText, string cipherText)
         {
@@ -54,7 +40,7 @@ namespace SecurityLibrary
             cipherText = cipherText.ToLower();
             for (int i = 2; i <= plainText.Length; i++)
             {
-                List<List<int>> permutations = GetPermutations(Enumerable.Range(1, i).ToList());
+                List<List<int>> permutations = GetPerms(Enumerable.Range(1, i).ToList());
                 foreach (var permutation in permutations)
                 {
                     if (Encrypt(plainText, permutation) == cipherText)

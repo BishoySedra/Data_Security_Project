@@ -14,14 +14,82 @@ namespace SecurityLibrary
         /// <param name="plainText"></param>
         /// <param name="cipherText"></param>
         /// <returns></returns>
+
+        // function to analyse the cipherText to get the key
         public string Analyse(string plainText)
         {
-            throw new NotImplementedException();
+            // choose letters only
+            plainText = preprocess_text(plainText);
+
+            // get the most common diagrams
+            string[] commonDiagrams = { "TH", "HE", "AN", "IN", "ER", "ON", "RE", "ED", "ND", "HA", "AT", "EN", "ES", "OF", "NT", "EA", "TI", "TO", "IO", "LE", "IS", "OU", "AR", "AS", "DE", "RT", "VE" };
+            
+            // get the most common diagrams in the plainText
+            Dictionary<string, int> commonDiagramsCount = new Dictionary<string, int>();
+
+            for (int i = 0; i < plainText.Length - 1; i++)
+            {
+                string diagram = plainText.Substring(i, 2);
+                if (commonDiagramsCount.ContainsKey(diagram))
+                {
+                    commonDiagramsCount[diagram]++;
+                }
+                else
+                {
+                    commonDiagramsCount.Add(diagram, 1);
+                }
+            }
+
+            // sort the commonDiagramsCount dictionary
+            var sortedCommonDiagramsCount = from pair in commonDiagramsCount
+                                            orderby pair.Value descending
+                                            select pair;
+
+            List<string>sortedPairs = new List<string>();
+
+            foreach (var sorted_pair in sortedCommonDiagramsCount) { 
+                sortedPairs.Add(sorted_pair.Key);
+            }
+
+            // Convert the sortedPairs to an array of strings, considering only the required number of pairs
+            string[] sortedPairsArr = sortedPairs.Take(commonDiagrams.Length).ToArray();
+
+            // Create a dictionary to map the sortedPairs to the commonDiagrams
+            Dictionary<string, string> sortedPairToCommonDiagram = new Dictionary<string, string>();
+
+            // Ensure we handle sorted pairs that exceed the length of commonDiagrams
+            int minPairs = Math.Min(commonDiagrams.Length, sortedPairsArr.Length);
+
+            for (int i = 0; i < minPairs; i++)
+            {
+                sortedPairToCommonDiagram.Add(sortedPairsArr[i], commonDiagrams[i]);
+            }
+
+            string result = "";
+            int n = plainText.Length;
+            for (int i = 0; i < n - 1; i += 2)
+            {
+                string temp = plainText[i].ToString() + plainText[i + 1].ToString();
+                if (sortedPairToCommonDiagram.ContainsKey(temp))
+                {
+                    result += sortedPairToCommonDiagram[temp];
+                }
+                else
+                {
+                    result += temp;
+                }
+            }
+
+            return result;
+
+            // return "";
+            // throw new NotImplementedException();
         }
 
         public string Analyse(string plainText, string cipherText)
         {
-            throw new NotSupportedException();
+            return "";
+            // throw new NotSupportedException();
         }
 
         public string Decrypt(string cipherText, string key)
@@ -47,7 +115,7 @@ namespace SecurityLibrary
 
             // generate the matrix 5*5
             char[,] squareMatrix = generate_matrix(key);
-            
+
             // Encryption Operations
             string result = do_encryption(squareMatrix, plainText);
 
@@ -55,7 +123,8 @@ namespace SecurityLibrary
             //throw new NotImplementedException();
         }
 
-        string preprocess_text(string text) {
+        string preprocess_text(string text)
+        {
             // choose only letters
             text = new string(text.Where(c => char.IsLetter(c)).ToArray());
 
@@ -68,7 +137,8 @@ namespace SecurityLibrary
             return text;
         }
 
-        char[,] generate_matrix(string key) {
+        char[,] generate_matrix(string key)
+        {
 
             string alphabetic = "ABCDEFGHIKLMNOPQRSTUVWXYZ";
             List<char> newKeyList = new List<char>();
@@ -115,7 +185,8 @@ namespace SecurityLibrary
             return squareMatrix;
         }
 
-        string do_encryption(char[,] squareMatrix, string plainText) {
+        string do_encryption(char[,] squareMatrix, string plainText)
+        {
 
             List<KeyValuePair<char, char>> pairs = new List<KeyValuePair<char, char>>();
 
@@ -258,7 +329,8 @@ namespace SecurityLibrary
             return result;
         }
 
-        string do_decryption(char[,] squareMatrix, string cipherText) {
+        string do_decryption(char[,] squareMatrix, string cipherText)
+        {
             List<KeyValuePair<char, char>> pairs = new List<KeyValuePair<char, char>>();
 
             int idx = 0;

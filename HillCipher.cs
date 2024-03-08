@@ -390,7 +390,7 @@ namespace SecurityLibrary
             Dictionary<char, int> letters = new Dictionary<char, int>();
             for (int i = 0; i < 26; i++)
             {
-                letters[(char)(i + 79)] = i; // maps A -> Z to 0 -> 25
+                letters[(char)(i + 65)] = i; // maps A -> Z to 0 -> 25
             }
 
             Dictionary<int, char> numbers = new Dictionary<int, char>();
@@ -539,7 +539,7 @@ namespace SecurityLibrary
             Dictionary<char, int> letters = new Dictionary<char, int>();
             for (int i = 0; i < 26; i++)
             {
-                letters[(char)(i + 79)] = i; // maps A -> Z to 0 -> 25
+                letters[(char)(i + 65)] = i; // maps A -> Z to 0 -> 25
             }
 
             Dictionary<int, char> numbers = new Dictionary<int, char>();
@@ -818,14 +818,14 @@ namespace SecurityLibrary
             // Cipher text matrix
             List<List<int>> cipherTextMatrix = createMatrix(cipher3, 3, false, false);
 
-            foreach (var row in cipherTextMatrix)
+            /*foreach (var row in cipherTextMatrix)
             {
                 foreach (var num in row)
                 {
                     Console.Write(num + " ");
                 }
                 Console.WriteLine();
-            }
+            }*/
             // build plain text matrix with size
             List<List<int>> plainTextMatrix = createMatrix(plain3, 3, false, false);
             /*List<List<int>> plainTextMatrix = new List<List<int>>();
@@ -837,7 +837,7 @@ namespace SecurityLibrary
             List<List<int>> inversePlainMatrix = getInverseMatrix(plainTextMatrix, 3);
 
             List<List<int>> keyMatrix = multiplyMatrices(cipherTextMatrix, inversePlainMatrix, 3);
-            foreach (var row in keyMatrix)
+            /*foreach (var row in keyMatrix)
             {
                 foreach (var num in row)
                 {
@@ -845,7 +845,7 @@ namespace SecurityLibrary
                 }
                 Console.WriteLine();
             }
-            Console.WriteLine("_____");
+            Console.WriteLine("_____");*/
 
             List<int> key = new List<int>();
 
@@ -857,13 +857,13 @@ namespace SecurityLibrary
                 }
             }
 
-            List<int> test = Encrypt(plain3, key);
+            /*List<int> test = Encrypt(plain3, key);
 
             foreach (var num in test)
             {
                 Console.Write(num + " ");
             }
-            Console.WriteLine("\n------");
+            Console.WriteLine("\n------");*/
 
             return key;
             //throw new NotImplementedException();
@@ -873,7 +873,50 @@ namespace SecurityLibrary
 
         public string Analyse3By3Key(string plain3, string cipher3)
         {
-            throw new NotImplementedException();
+
+            // Variables
+            string capitalPlain = plain3.ToUpper();
+            string capitalCipher = cipher3.ToUpper();
+            List<int> keyNumbers = new List<int>();
+            List<int> cipherTextNumber = new List<int>();
+            List<int> plainTextNumbers = new List<int>();
+            string resultString = "";
+
+            // Create array holding letters
+            Dictionary<char, int> letters = new Dictionary<char, int>();
+            for (int i = 0; i < 26; i++)
+            {
+                letters[(char)(i + 65)] = i; // maps A -> Z to 0 -> 25
+            }
+
+            Dictionary<int, char> numbers = new Dictionary<int, char>();
+            foreach (var pair in letters)
+            {
+                numbers[pair.Value] = pair.Key;
+            }
+
+
+
+            capitalCipher = Regex.Replace(capitalCipher, @"\s+", ""); // Removes whitespaces, just in case
+
+            foreach (var letter in capitalCipher)
+                cipherTextNumber.Add(letters[letter]);
+
+
+            capitalPlain = Regex.Replace(capitalPlain, @"\s+", ""); // Removes whitespaces
+
+            foreach (var letter in capitalPlain)
+                plainTextNumbers.Add(letters[letter]);
+
+            List<int> result = Analyse3By3Key(plainTextNumbers, cipherTextNumber);
+
+            foreach (var c in result)
+            {
+                resultString += numbers[c];
+            }
+
+            return resultString;
+            //throw new NotImplementedException();
         }
     }
 }

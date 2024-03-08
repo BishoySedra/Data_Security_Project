@@ -18,78 +18,12 @@ namespace SecurityLibrary
         // function to analyse the cipherText to get the key
         public string Analyse(string plainText)
         {
-            // choose letters only
-            plainText = preprocess_text(plainText);
-
-            // get the most common diagrams
-            string[] commonDiagrams = { "TH", "HE", "AN", "IN", "ER", "ON", "RE", "ED", "ND", "HA", "AT", "EN", "ES", "OF", "NT", "EA", "TI", "TO", "IO", "LE", "IS", "OU", "AR", "AS", "DE", "RT", "VE" };
-            
-            // get the most common diagrams in the plainText
-            Dictionary<string, int> commonDiagramsCount = new Dictionary<string, int>();
-
-            for (int i = 0; i < plainText.Length - 1; i++)
-            {
-                string diagram = plainText.Substring(i, 2);
-                if (commonDiagramsCount.ContainsKey(diagram))
-                {
-                    commonDiagramsCount[diagram]++;
-                }
-                else
-                {
-                    commonDiagramsCount.Add(diagram, 1);
-                }
-            }
-
-            // sort the commonDiagramsCount dictionary
-            var sortedCommonDiagramsCount = from pair in commonDiagramsCount
-                                            orderby pair.Value descending
-                                            select pair;
-
-            List<string>sortedPairs = new List<string>();
-
-            foreach (var sorted_pair in sortedCommonDiagramsCount) { 
-                sortedPairs.Add(sorted_pair.Key);
-            }
-
-            // Convert the sortedPairs to an array of strings, considering only the required number of pairs
-            string[] sortedPairsArr = sortedPairs.Take(commonDiagrams.Length).ToArray();
-
-            // Create a dictionary to map the sortedPairs to the commonDiagrams
-            Dictionary<string, string> sortedPairToCommonDiagram = new Dictionary<string, string>();
-
-            // Ensure we handle sorted pairs that exceed the length of commonDiagrams
-            int minPairs = Math.Min(commonDiagrams.Length, sortedPairsArr.Length);
-
-            for (int i = 0; i < minPairs; i++)
-            {
-                sortedPairToCommonDiagram.Add(sortedPairsArr[i], commonDiagrams[i]);
-            }
-
-            string result = "";
-            int n = plainText.Length;
-            for (int i = 0; i < n - 1; i += 2)
-            {
-                string temp = plainText[i].ToString() + plainText[i + 1].ToString();
-                if (sortedPairToCommonDiagram.ContainsKey(temp))
-                {
-                    result += sortedPairToCommonDiagram[temp];
-                }
-                else
-                {
-                    result += temp;
-                }
-            }
-
-            return result;
-
-            // return "";
-            // throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public string Analyse(string plainText, string cipherText)
         {
-            return "";
-            // throw new NotSupportedException();
+            throw new NotSupportedException();
         }
 
         public string Decrypt(string cipherText, string key)

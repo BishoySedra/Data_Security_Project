@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -14,105 +15,17 @@ namespace SecurityLibrary
     /// </summary>
     public class HillCipher : ICryptographicTechnique<string, string>, ICryptographicTechnique<List<int>, List<int>>
     {
-        public List<int> Analyse(List<int> plainText, List<int> cipherText)
+        public List<List<int>> getInverseMatrix(List<List<int>> matrix, int matrixSize)
         {
-            throw new NotImplementedException();
-        }
-
-        public string Analyse(string plainText, string cipherText)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<int> Decrypt(List<int> cipherText, List<int> key)
-        {
-            // Variables
-            int keySize = cipherText.Count;
-            int matrixSize = (int)Math.Sqrt(key.Count);
-            List<List<int>> matrixAugmented = new List<List<int>>();
-            List<List<int>> keyMatrix = new List<List<int>>();
             List<List<int>> inverseMatrix = new List<List<int>>();
-            List<List<int>> plain = new List<List<int>>();
-            List<int> plainArr = new List<int>();
             int bValue = -1;
             double bRemainder;
             int mod = 1;
-            int cipherSize = (int)Math.Sqrt(keySize);
 
-
-            // Create array holding letters
-            Dictionary<char, int> letters = new Dictionary<char, int>();
-            for (int i = 0; i < 26; i++)
-            {
-                letters[(char)(i + 79)] = i; // maps A -> Z to 0 -> 25
-            }
-
-            Dictionary<int, char> numbers = new Dictionary<int, char>();
-            foreach (var pair in letters)
-            {
-                numbers[pair.Value] = pair.Key;
-            }
-
-            // Create key matrix 
-            int map = 0;
-            for (int i = 0; i < matrixSize; i++)
-            {
-                List<int> row = new List<int>(); // list containing elements in row
-                for (int j = 0; j < matrixSize; j++)
-                {
-                    if (map < key.Count)
-                    {
-                        row.Add(key[map]);
-                        map++;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                keyMatrix.Add(row);
-            }
-
-            // Cipher text matrix
-
-            List<List<int>> cipherTextMatrix = new List<List<int>>();
-            int index = 0;
-            int columns = (int)Math.Ceiling((double)cipherText.Count / matrixSize);
-
-            Console.WriteLine("Col: " + columns);
-
-            for (int i = 0; i < columns; i++)
-            {
-                List<int> column = new List<int>();
-                for (int j = 0; j < matrixSize; j++)
-                {
-                    if (index < cipherText.Count)
-                    {
-                        column.Add(cipherText[index]);
-                        index++;
-                    }
-                }
-                cipherTextMatrix.Add(column);
-            }
-
-            int keyMatrixCount = keyMatrix.Count;
-            int keyMatrixColumns = keyMatrix[0].Count;
-
-            int cipherMatrixCount = cipherTextMatrix.Count; // kam row
-            int cipherMatrixColumns = cipherTextMatrix[0].Count; // kol row feeh kam
-
-            Console.WriteLine(keyMatrixCount);
-            Console.WriteLine(keyMatrixColumns);
-            Console.WriteLine(cipherMatrixCount);
-            Console.WriteLine(cipherMatrixColumns);
-
-            //// Inverse matrix
-
-            // Get determinant
             switch (matrixSize)
             {
                 case 2: // Case: 2x2 matrix
-                    int determinant2 = ((keyMatrix[0][0] * keyMatrix[1][1]) - (keyMatrix[0][1] * keyMatrix[1][0])) % 26;
+                    int determinant2 = ((matrix[0][0] * matrix[1][1]) - (matrix[0][1] * matrix[1][0])) % 26;
 
                     while (determinant2 < 0)
                     {
@@ -153,10 +66,10 @@ namespace SecurityLibrary
                     Console.WriteLine("B: " + bValue);
 
                     Console.WriteLine("Det2: " + determinant2);
-                    int index11 = keyMatrix[1][1];
-                    int index10 = -1 * keyMatrix[1][0] % 26;
-                    int index01 = -1 * keyMatrix[0][1] % 26;
-                    int index00 = keyMatrix[0][0];
+                    int index11 = matrix[1][1];
+                    int index10 = -1 * matrix[1][0] % 26;
+                    int index01 = -1 * matrix[0][1] % 26;
+                    int index00 = matrix[0][0];
 
                     // Make sure no -ve values are present
                     while (index10 < 0)
@@ -224,8 +137,8 @@ namespace SecurityLibrary
                     Console.WriteLine("----");
                     for (int i = 0; i < matrixSize; i++) // get determinant and modulo it
                     {
-                        int subDeterminant = (keyMatrix[0][i] * (keyMatrix[1][(i + 1) % matrixSize] * keyMatrix[2][(i + 2) % matrixSize] -
-                                                                 keyMatrix[1][(i + 2) % matrixSize] * keyMatrix[2][(i + 1) % matrixSize]));
+                        int subDeterminant = (matrix[0][i] * (matrix[1][(i + 1) % matrixSize] * matrix[2][(i + 2) % matrixSize] -
+                                                                 matrix[1][(i + 2) % matrixSize] * matrix[2][(i + 1) % matrixSize]));
                         determinant3 += subDeterminant;
 
                         /*Console.WriteLine("0, " + (i + keyMatrix[0][i]) + "\t" + keyMatrix[0][i]);
@@ -282,8 +195,8 @@ namespace SecurityLibrary
                         List<int> cofactorRow = new List<int>();
                         for (int j = 0; j < matrixSize; j++)
                         {
-                            List<int> subDeterminantRow1 = new List<int>() { keyMatrix[(i + 1) % matrixSize][(j + 1) % matrixSize], keyMatrix[(i + 1) % matrixSize][(j + 2) % matrixSize] };
-                            List<int> subDeterminantRow2 = new List<int>() { keyMatrix[(i + 2) % matrixSize][(j + 1) % matrixSize], keyMatrix[(i + 2) % matrixSize][(j + 2) % matrixSize] };
+                            List<int> subDeterminantRow1 = new List<int>() { matrix[(i + 1) % matrixSize][(j + 1) % matrixSize], matrix[(i + 1) % matrixSize][(j + 2) % matrixSize] };
+                            List<int> subDeterminantRow2 = new List<int>() { matrix[(i + 2) % matrixSize][(j + 1) % matrixSize], matrix[(i + 2) % matrixSize][(j + 2) % matrixSize] };
 
                             int subDeterminant = (subDeterminantRow1[0] * subDeterminantRow2[1]) - (subDeterminantRow1[1] * subDeterminantRow2[0]);
 
@@ -332,48 +245,324 @@ namespace SecurityLibrary
 
                     break;
             }
-            /*Console.WriteLine("Key Matrix: ");
-            foreach (var row in keyMatrix)
+            return inverseMatrix;
+        }
+
+        public List<List<int>> createMatrix(List<int> textList, int matrixSize, bool isKeyMatrix, bool byRow)
+        {
+            switch (isKeyMatrix)
             {
-                foreach (var num in row)
-                {
-                    Console.Write(num + " ");
-                }
-                Console.WriteLine();
+                case true:
+                    List<List<int>> keyMatrix = new List<List<int>>();
+
+                    for (int i = 0; i < matrixSize; i++)
+                    {
+                        List<int> row = new List<int>();
+                        for (int j = 0; j < matrixSize; j++)
+                        {
+                            row.Add(0);
+                        }
+
+                        keyMatrix.Add(row);
+                    }
+
+                    int keyIndex = 0;
+                    for (int i = 0; i < matrixSize; i++)
+                    {
+                        List<int> row = new List<int>(); // list containing elements in row
+                        for (int j = 0; j < matrixSize; j++)
+                        {
+                            if (keyIndex < textList.Count)
+                            {
+                                //row.Add(textList[keyIndex]);
+                                keyMatrix[i][j] = textList[keyIndex];
+                                keyIndex++;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        //keyMatrix.Add(row);
+                    }
+                    return keyMatrix;
+
+                default: // not key matrix
+
+                    int map = 0;
+                    int columns = (int)Math.Ceiling((double)textList.Count / matrixSize);
+
+                    List<List<int>> textMatrix = new List<List<int>>();
+
+                    for (int i = 0; i < matrixSize; i++)
+                    {
+                        List<int> row = new List<int>();
+                        for (int j = 0; j < columns; j++)
+                        {
+                            row.Add(0);
+                        }
+
+                        textMatrix.Add(row);
+                    }
+
+                    if (byRow)
+                    {
+                        for (int i = 0; i < matrixSize; i++)
+                        {
+                            for (int j = 0; j < columns; j++)
+                            {
+                                if (map < textList.Count)
+                                {
+                                    textMatrix[i][j] = textList[map];
+                                    map++;
+                                }
+                                else
+                                {
+                                    textMatrix[i][j] = 0;
+                                }
+
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < columns; i++)
+                        {
+                            for (int j = 0; j < matrixSize; j++)
+                            {
+                                if (map < textList.Count)
+                                {
+                                    textMatrix[j][i] = textList[map];
+                                    map++;
+                                }
+                                else
+                                {
+                                    textMatrix[i][j] = 0;
+                                }
+                            }
+                        }
+                    }
+                    return textMatrix;
             }
-            Console.WriteLine();
 
-            Console.WriteLine("Cipher Matrix");
-            foreach (var row in cipherTextMatrix)
-            {
-                foreach (var num in row)
-                {
-                    Console.Write(num + " ");
-                }
-                Console.WriteLine();
-            }
-            Console.WriteLine();
-            Console.WriteLine("------");*/
+        }
 
+        public List<List<int>> multiplyMatrices(List<List<int>> matrix1, List<List<int>> matrix2, int matrixSize)
+        {
+            List<List<int>> result = new List<List<int>>();
+            int matrix1Count = matrix1.Count;
+            int matrix1Columns = matrix1[0].Count;
+            int matrix2Columns = matrix2[0].Count;
 
-            // matrix multiplication
-            for (int i = 0; i < keyMatrixCount; i++)
+            Console.WriteLine(matrix1Count + " " + matrix1Columns + " " + matrix2Columns);
+
+            for (int i = 0; i < matrix1Count; i++)
             {
                 List<int> row = new List<int>();
-                for (int j = 0; j < cipherMatrixCount; j++)
+                for (int j = 0; j < matrix2Columns; j++)
                 {
                     int sum = 0;
-                    for (int k = 0; k < keyMatrixColumns; k++)
+                    for (int k = 0; k < matrix1Columns; k++)
                     {
                         //Console.WriteLine("inverse: " + inverseMatrix[i][k] + "\tcipher: " + cipherTextMatrix[j][k]);
-                        sum += inverseMatrix[i][k] * cipherTextMatrix[j][k];
+                        sum += matrix1[i][k] * matrix2[k][j];
 
                         sum %= 26;
                     }
                     row.Add(sum);
                 }
-                plain.Add(row);
+                result.Add(row);
             }
+            return result;
+        }
+
+
+        public List<int> Analyse(List<int> plainText, List<int> cipherText)
+        {
+            // Variables
+            int plainSize = plainText.Count;
+            int cipherSize = cipherText.Count;
+            int plainMatrixSize = (int)Math.Sqrt(plainSize);
+            int cipherMatrixSize = (int)Math.Sqrt(cipherSize);
+            bool correctKey = true;
+
+            // Create array holding letters
+            Dictionary<char, int> letters = new Dictionary<char, int>();
+            for (int i = 0; i < 26; i++)
+            {
+                letters[(char)(i + 79)] = i; // maps A -> Z to 0 -> 25
+            }
+
+            Dictionary<int, char> numbers = new Dictionary<int, char>();
+            foreach (var pair in letters)
+            {
+                numbers[pair.Value] = pair.Key;
+            }
+
+
+            // Cipher text matrix
+
+            List<List<int>> cipherTextMatrix = createMatrix(cipherText, 2, false, false);
+
+            // build plain text matrix with size (matrixSize rows X `columns` columns
+            List<List<int>> plainTextMatrix = createMatrix(plainText, 2, false, false);
+
+            List<int> key = new List<int>() { 0, 0, 0, 0 };
+            List<int> ret = new List<int>();
+
+            int x = 0;
+
+            for (int i = 0; i < 26; i++)
+            {
+                for (int j = 0; j < 26; j++)
+                {
+                    for (int k = 0; k < 26; k++)
+                    {
+                        for (int m = 0; m < 26; m++)
+                        {
+                            key[0] = i; key[1] = j; key[2] = k; key[3] = m;
+                            //correctKey = true;
+                            List<int> result = Encrypt(plainText, key);
+                            ret = result;
+                            /*Console.Write("Key: " + correctKey + " ");
+                            Console.WriteLine(key[0] + " " + key[1] + " " + key[2] + " " + key[3]);*/
+                            for (int l = 0; l < cipherSize; l++)
+                            {
+                                correctKey = true;
+                                /*Console.WriteLine(result[l] + "\t" + cipherText[l]);*/
+                                if (result[l] != cipherText[l])
+                                {
+                                    //Console.WriteLine("NOT");
+                                    x = 10;
+                                    correctKey = false;
+                                    break;
+                                }
+                            }
+                            if (correctKey)
+                            {
+                                /*Console.WriteLine("YES");*/
+                                return key;
+                            }
+                            /*Console.WriteLine("------");*/
+                        }
+                    }
+                }
+            }
+
+            /*foreach (var num in ret)
+            {
+                Console.Write(num + " ");
+            }
+            Console.WriteLine();
+
+            Console.WriteLine(x);
+
+            Console.WriteLine(correctKey);
+
+            if (correctKey)
+                return key;
+                */
+
+
+            /*foreach (var row in test)
+            {
+                foreach (var num in row)
+                {
+                    Console.Write(num + " ");
+                }
+                Console.WriteLine();
+            }*/
+
+            /*List<List<int>> keyMatrix = multiplyMatrices(inversedPlainMatrix, cipherTextMatrix);*/
+
+            throw new InvalidAnlysisException();
+
+            //throw new NotImplementedException();
+        }
+
+        public string Analyse(string plainText, string cipherText)
+        {
+            // Variables
+            string capitalPlain = plainText.ToUpper();
+            string capitalCipher = cipherText.ToUpper();
+            List<int> keyNumbers = new List<int>();
+            List<int> cipherTextNumber = new List<int>();
+            List<int> plainTextNumbers = new List<int>();
+            string resultString = "";
+
+            // Create array holding letters
+            Dictionary<char, int> letters = new Dictionary<char, int>();
+            for (int i = 0; i < 26; i++)
+            {
+                letters[(char)(i + 65)] = i; // maps A -> Z to 0 -> 25
+            }
+
+            Dictionary<int, char> numbers = new Dictionary<int, char>();
+            foreach (var pair in letters)
+            {
+                numbers[pair.Value] = pair.Key;
+            }
+
+           
+
+            capitalCipher = Regex.Replace(capitalCipher, @"\s+", ""); // Removes whitespaces, just in case
+
+            foreach (var letter in capitalCipher)
+                cipherTextNumber.Add(letters[letter]);
+
+            
+            capitalPlain = Regex.Replace(capitalPlain, @"\s+", ""); // Removes whitespaces
+
+            foreach (var letter in capitalPlain)
+                plainTextNumbers.Add(letters[letter]);
+
+            List<int> result = Analyse(plainTextNumbers, cipherTextNumber);
+
+            foreach (var c in result)
+            {
+                resultString += numbers[c];
+            }
+
+            return resultString;
+
+            //throw new NotImplementedException();
+        }
+
+        public List<int> Decrypt(List<int> cipherText, List<int> key)
+        {
+            // Variables
+            int matrixSize = (int)Math.Sqrt(key.Count);
+            List<int> plainArr = new List<int>();
+            bool isKeyMatrix = true;
+
+            // Create array holding letters
+            Dictionary<char, int> letters = new Dictionary<char, int>();
+            for (int i = 0; i < 26; i++)
+            {
+                letters[(char)(i + 79)] = i; // maps A -> Z to 0 -> 25
+            }
+
+            Dictionary<int, char> numbers = new Dictionary<int, char>();
+            foreach (var pair in letters)
+            {
+                numbers[pair.Value] = pair.Key;
+            }
+
+            // Create key matrix 
+
+            List<List<int>> keyMatrix = createMatrix(key, matrixSize, isKeyMatrix, true);
+
+            // Cipher text matrix
+
+            List<List<int>> cipherTextMatrix = createMatrix(cipherText, matrixSize, !isKeyMatrix, false);
+
+
+            //// Inverse matrix
+
+            List<List<int>> inverseMatrix = getInverseMatrix(keyMatrix, matrixSize);
+
+            // matrix multiplication
+            List<List<int>> plain = multiplyMatrices(inverseMatrix, cipherTextMatrix, matrixSize);
 
             int plainCount = plain.Count;
             int plainColumns = plain[0].Count;
@@ -387,9 +576,8 @@ namespace SecurityLibrary
                 }
             }
 
-
             return plainArr;
-            
+
             //throw new NotImplementedException();
         }
 
@@ -475,12 +663,12 @@ namespace SecurityLibrary
 
         {
             // Variables
+            double rootKey = Math.Sqrt(key.Count);
+            //Console.WriteLine(rootKey);
             int keySize = key.Count;
-            int matrixSize = (int)Math.Sqrt(keySize); // key length is always a perfect square (4, 9, 16, etc...)
-            List<List<int>> keyMatrix = new List<List<int>>();
-            List<List<int>> cipher = new List<List<int>>();
+            int matrixSize = (int)Math.Sqrt(key.Count); // key length is always a perfect square (4, 9, 16, etc...)
             List<int> cipherArr = new List<int>();
-            string cipherText = "";
+            bool isKeyMatrix = true;
 
             // Store char -> int and int -> char
             Dictionary<char, int> letters = new Dictionary<char, int>();
@@ -496,77 +684,35 @@ namespace SecurityLibrary
             }
 
             // Create key matrix 
-            int index = 0;
-            for (int i = 0; i < matrixSize; i++)
-            {
-                List<int> row = new List<int>(); // list containing elements in row
-                for (int j = 0; j < matrixSize; j++)
-                {
-                    if (index < key.Count)
-                    {
-                        row.Add(key[index]);
-                        index++;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                keyMatrix.Add(row);
-            }
 
-            // key matrix dimensions
-            int keyMatrixCnt = keyMatrix.Count;
-            int keyMatrixClmn = keyMatrix[0].Count;
+            List<List<int>> keyMatrix = createMatrix(key, matrixSize, true, true);
+
 
 
             // build plain text matrix with size (matrixSize rows X `columns` columns
-            List<List<int>> plainTextMatrix = new List<List<int>>();
-            int map = 0;
-            int columns = (int)Math.Ceiling((double)plainText.Count / matrixSize);
+            List<List<int>> plainTextMatrix = createMatrix(plainText, matrixSize, !isKeyMatrix, false);
 
-            for (int i = 0; i < columns; i++)
+            /*foreach (var row in plainTextMatrix)
             {
-                List<int> column = new List<int>();
-                for (int j = 0; j < matrixSize; j++)
+                foreach (var num in row)
                 {
-                    if (map < plainText.Count)
-                    {
-                        column.Add(plainText[map]);
-                        map++;
-                    }
+                    Console.Write(num + " ");
                 }
-                plainTextMatrix.Add(column);
-            }
-
-            // plain text matrix dimensions
-            int plainTextMatrixCnt = plainTextMatrix.Count;
-            int plainTextMatrixClmn = plainTextMatrix[0].Count;
+                Console.WriteLine();
+            }*/
 
             // matrix multiplication
-            for (int i = 0; i < keyMatrixCnt; i++)
-            {
-                List<int> row = new List<int>();
-                for (int j = 0; j < plainTextMatrixCnt; j++)
-                {
-                    int sum = 0;
-                    for (int k = 0; k < keyMatrixClmn; k++)
-                    {
-                        sum += keyMatrix[i][k] * plainTextMatrix[j][k];
-                        sum %= 26;
-                    }
-                    row.Add(sum);
-                }
-                cipher.Add(row);
-            }
 
-            int cipherCnt = cipher.Count;
-            int cipherClmn = cipher[0].Count;
+            List<List<int>> cipher = multiplyMatrices(keyMatrix, plainTextMatrix, matrixSize);
+
+
+            int cipherRow = cipher.Count;
+            int cipherColumn = cipher[0].Count;
 
             // convert cipher numbers to letters
-            for (int i = 0; i < cipherClmn; i++)
+            for (int i = 0; i < cipherColumn; i++)
             {
-                for (int j = 0; j < cipherCnt; j++)
+                for (int j = 0; j < cipherRow; j++)
                 {
                     cipherArr.Add(cipher[j][i]);
                 }
@@ -665,7 +811,64 @@ namespace SecurityLibrary
 
         public List<int> Analyse3By3Key(List<int> plain3, List<int> cipher3)
         {
-            throw new NotImplementedException();
+            int plainSize = plain3.Count;
+            int inverseSize = (int)Math.Sqrt(plainSize);
+            int cipherSize = cipher3.Count;
+
+            // Cipher text matrix
+            List<List<int>> cipherTextMatrix = createMatrix(cipher3, 3, false, false);
+
+            foreach (var row in cipherTextMatrix)
+            {
+                foreach (var num in row)
+                {
+                    Console.Write(num + " ");
+                }
+                Console.WriteLine();
+            }
+            // build plain text matrix with size
+            List<List<int>> plainTextMatrix = createMatrix(plain3, 3, false, false);
+            /*List<List<int>> plainTextMatrix = new List<List<int>>();
+            plainTextMatrix.Add(new List<int> { 5, 5, 19 });
+            plainTextMatrix.Add(new List<int> { 21, 2, 14 });
+            plainTextMatrix.Add(new List<int> { 2, 16, 1 });
+            Console.WriteLine("----");*/
+
+            List<List<int>> inversePlainMatrix = getInverseMatrix(plainTextMatrix, 3);
+
+            List<List<int>> keyMatrix = multiplyMatrices(cipherTextMatrix, inversePlainMatrix, 3);
+            foreach (var row in keyMatrix)
+            {
+                foreach (var num in row)
+                {
+                    Console.Write(num + " ");
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine("_____");
+
+            List<int> key = new List<int>();
+
+            foreach (var row in keyMatrix)
+            {
+                foreach (var num in row)
+                {
+                    key.Add(num);
+                }
+            }
+
+            List<int> test = Encrypt(plain3, key);
+
+            foreach (var num in test)
+            {
+                Console.Write(num + " ");
+            }
+            Console.WriteLine("\n------");
+
+            return key;
+            //throw new NotImplementedException();
+
+            //throw new NotImplementedException();
         }
 
         public string Analyse3By3Key(string plain3, string cipher3)

@@ -50,17 +50,11 @@ namespace SecurityLibrary
                     while (bValue < 0) // loop until we get a viable `b` value (+ve int)
                     {
                         int determinantRemainder = 26 - determinant2;
-                        //Console.WriteLine("Det rem: " + determinantRemainder);
-                        //Console.WriteLine("mod b4: " + mod);
                         bRemainder = (double)mod / (double)determinantRemainder;
-
-                        //Console.WriteLine("B rem: " + bRemainder);
 
                         if ((bRemainder > 0 && bRemainder < 26) && (bRemainder == Math.Floor(bRemainder)))
                             bValue = 26 - (int)bRemainder;
                         else mod += 26;
-                        //Console.WriteLine("mod after: " + mod);
-                        //Console.WriteLine("B after: " + bValue);
                     }
 
                     Console.WriteLine("B: " + bValue);
@@ -124,15 +118,6 @@ namespace SecurityLibrary
                     break;
                 case 3: // Case: 3x3 matrix
                     int determinant3 = 0;
-                    /*Console.WriteLine("----");
-                    foreach (var row in keyMatrix)
-                    {
-                        foreach (var num in row)
-                        {
-                            Console.Write(num + " ");
-                        }
-                        Console.WriteLine();
-                    }*/
 
                     Console.WriteLine("----");
                     for (int i = 0; i < matrixSize; i++) // get determinant and modulo it
@@ -140,16 +125,6 @@ namespace SecurityLibrary
                         int subDeterminant = (matrix[0][i] * (matrix[1][(i + 1) % matrixSize] * matrix[2][(i + 2) % matrixSize] -
                                                                  matrix[1][(i + 2) % matrixSize] * matrix[2][(i + 1) % matrixSize]));
                         determinant3 += subDeterminant;
-
-                        /*Console.WriteLine("0, " + (i + keyMatrix[0][i]) + "\t" + keyMatrix[0][i]);
-                        Console.WriteLine("1, " + (i + 1) % matrixSize + "\t" + keyMatrix[1][(i + 1) % matrixSize]);
-                        Console.WriteLine("2, " + (i + 2) % matrixSize + "\t" + keyMatrix[2][(i + 2) % matrixSize]);
-                        Console.WriteLine("1, " + (i + 2) % matrixSize + "\t" + keyMatrix[1][(i + 2) % matrixSize]);
-                        Console.WriteLine("2, " + (i + 1) % matrixSize + "\t" + keyMatrix[2][(i + 1) % matrixSize]);
-                        Console.WriteLine(determinant3);
-                        Console.WriteLine();*/
-
-
                     }
                     determinant3 %= 26;
 
@@ -177,17 +152,13 @@ namespace SecurityLibrary
                     {
                         int determinantRemainder = 26 - determinant3;
 
-                        //Console.WriteLine("mod b4: " + mod);
                         bRemainder = (double)mod / (double)determinantRemainder;
 
-                        //Console.WriteLine("B rem: " + bRemainder);
 
                         if ((bRemainder > 0 && bRemainder < 26) && (bRemainder == Math.Floor(bRemainder)))
                             bValue = 26 - (int)bRemainder;
                         else mod += 26;
-                        //Console.WriteLine("mod after: " + mod);
                     }
-                    /*Console.WriteLine("B: " + bValue); // nova*/
 
                     List<List<int>> adjointMatrix = new List<List<int>>();
                     for (int i = 0; i < matrixSize; i++)
@@ -211,16 +182,6 @@ namespace SecurityLibrary
                         adjointMatrix.Add(cofactorRow);
                     }
 
-                    /*foreach (var row in adjointMatrix)
-                    {
-                        foreach (var num in row)
-                        {
-                            Console.Write(num + " ");
-                        }
-                        Console.WriteLine();
-                    }*/
-
-
                     for (int i = 0; i < matrixSize; i++)
                     {
                         List<int> inverseRow = new List<int>();
@@ -233,15 +194,6 @@ namespace SecurityLibrary
                         inverseMatrix.Add(inverseRow);
                     }
 
-
-                    /*foreach (var row in inverseMatrix)
-                    {
-                        foreach (var num in row)
-                        {
-                            Console.Write(num + " ");
-                        }
-                        Console.WriteLine();
-                    }*/
 
                     break;
             }
@@ -274,7 +226,6 @@ namespace SecurityLibrary
                         {
                             if (keyIndex < textList.Count)
                             {
-                                //row.Add(textList[keyIndex]);
                                 keyMatrix[i][j] = textList[keyIndex];
                                 keyIndex++;
                             }
@@ -283,7 +234,6 @@ namespace SecurityLibrary
                                 break;
                             }
                         }
-                        //keyMatrix.Add(row);
                     }
                     return keyMatrix;
 
@@ -364,7 +314,6 @@ namespace SecurityLibrary
                     int sum = 0;
                     for (int k = 0; k < matrix1Columns; k++)
                     {
-                        //Console.WriteLine("inverse: " + inverseMatrix[i][k] + "\tcipher: " + cipherTextMatrix[j][k]);
                         sum += matrix1[i][k] * matrix2[k][j];
 
                         sum %= 26;
@@ -380,10 +329,7 @@ namespace SecurityLibrary
         public List<int> Analyse(List<int> plainText, List<int> cipherText)
         {
             // Variables
-            int plainSize = plainText.Count;
             int cipherSize = cipherText.Count;
-            int plainMatrixSize = (int)Math.Sqrt(plainSize);
-            int cipherMatrixSize = (int)Math.Sqrt(cipherSize);
             bool correctKey = true;
 
             // Create array holding letters
@@ -399,16 +345,7 @@ namespace SecurityLibrary
                 numbers[pair.Value] = pair.Key;
             }
 
-
-            // Cipher text matrix
-
-            List<List<int>> cipherTextMatrix = createMatrix(cipherText, 2, false, false);
-
-            // build plain text matrix with size (matrixSize rows X `columns` columns
-            List<List<int>> plainTextMatrix = createMatrix(plainText, 2, false, false);
-
             List<int> key = new List<int>() { 0, 0, 0, 0 };
-            List<int> ret = new List<int>();
 
             int x = 0;
 
@@ -421,59 +358,24 @@ namespace SecurityLibrary
                         for (int m = 0; m < 26; m++)
                         {
                             key[0] = i; key[1] = j; key[2] = k; key[3] = m;
-                            //correctKey = true;
                             List<int> result = Encrypt(plainText, key);
-                            ret = result;
-                            /*Console.Write("Key: " + correctKey + " ");
-                            Console.WriteLine(key[0] + " " + key[1] + " " + key[2] + " " + key[3]);*/
                             for (int l = 0; l < cipherSize; l++)
                             {
                                 correctKey = true;
-                                /*Console.WriteLine(result[l] + "\t" + cipherText[l]);*/
                                 if (result[l] != cipherText[l])
                                 {
-                                    //Console.WriteLine("NOT");
-                                    x = 10;
                                     correctKey = false;
                                     break;
                                 }
                             }
                             if (correctKey)
                             {
-                                /*Console.WriteLine("YES");*/
                                 return key;
                             }
-                            /*Console.WriteLine("------");*/
                         }
                     }
                 }
             }
-
-            /*foreach (var num in ret)
-            {
-                Console.Write(num + " ");
-            }
-            Console.WriteLine();
-
-            Console.WriteLine(x);
-
-            Console.WriteLine(correctKey);
-
-            if (correctKey)
-                return key;
-                */
-
-
-            /*foreach (var row in test)
-            {
-                foreach (var num in row)
-                {
-                    Console.Write(num + " ");
-                }
-                Console.WriteLine();
-            }*/
-
-            /*List<List<int>> keyMatrix = multiplyMatrices(inversedPlainMatrix, cipherTextMatrix);*/
 
             throw new InvalidAnlysisException();
 
@@ -485,7 +387,6 @@ namespace SecurityLibrary
             // Variables
             string capitalPlain = plainText.ToUpper();
             string capitalCipher = cipherText.ToUpper();
-            List<int> keyNumbers = new List<int>();
             List<int> cipherTextNumber = new List<int>();
             List<int> plainTextNumbers = new List<int>();
             string resultString = "";
@@ -502,8 +403,6 @@ namespace SecurityLibrary
             {
                 numbers[pair.Value] = pair.Key;
             }
-
-           
 
             capitalCipher = Regex.Replace(capitalCipher, @"\s+", ""); // Removes whitespaces, just in case
 
@@ -590,10 +489,7 @@ namespace SecurityLibrary
             int matrixSize = (int)Math.Sqrt(keySize);
             List<int> mappedCipherText = new List<int>();
             List<int> keyNumbers = new List<int>();
-            List<List<int>> keyMatrix = new List<List<int>>();
-            List<List<int>> cipherTextMatrix = new List<List<int>>();
             string plainText = "";
-            List<List<int>> plain = new List<List<int>>();
             List<int> cipherTextNumber = new List<int>();
 
             // Create array holding letters
@@ -663,9 +559,6 @@ namespace SecurityLibrary
 
         {
             // Variables
-            double rootKey = Math.Sqrt(key.Count);
-            //Console.WriteLine(rootKey);
-            int keySize = key.Count;
             int matrixSize = (int)Math.Sqrt(key.Count); // key length is always a perfect square (4, 9, 16, etc...)
             List<int> cipherArr = new List<int>();
             bool isKeyMatrix = true;
@@ -687,19 +580,8 @@ namespace SecurityLibrary
 
             List<List<int>> keyMatrix = createMatrix(key, matrixSize, true, true);
 
-
-
             // build plain text matrix with size (matrixSize rows X `columns` columns
             List<List<int>> plainTextMatrix = createMatrix(plainText, matrixSize, !isKeyMatrix, false);
-
-            /*foreach (var row in plainTextMatrix)
-            {
-                foreach (var num in row)
-                {
-                    Console.Write(num + " ");
-                }
-                Console.WriteLine();
-            }*/
 
             // matrix multiplication
 
@@ -733,13 +615,8 @@ namespace SecurityLibrary
             int matrixSize = (int)Math.Sqrt(keySize); // key length is always a perfect square (4, 9, 16, etc...)
             List<int> mappedPlainText = new List<int>();
             List<int> keyNumbers = new List<int>();
-            List<List<int>> keyMatrix = new List<List<int>>();
-            List<List<int>> plainTextMatrix = new List<List<int>>();
             string cipherText = "";
-            List<List<int>> cipher = new List<List<int>>();
             List<int> plainTextNumbers = new List<int>();
-
-            const int ASCII_MOD = 65;
 
             // Create array holding letters
             Dictionary<char, int> letters = new Dictionary<char, int>();
@@ -753,8 +630,6 @@ namespace SecurityLibrary
             {
                 numbers[pair.Value] = pair.Key;
             }
-
-           
 
             //// Convert key to numbers
             foreach (char c in capitalKey)
@@ -818,34 +693,12 @@ namespace SecurityLibrary
             // Cipher text matrix
             List<List<int>> cipherTextMatrix = createMatrix(cipher3, 3, false, false);
 
-            /*foreach (var row in cipherTextMatrix)
-            {
-                foreach (var num in row)
-                {
-                    Console.Write(num + " ");
-                }
-                Console.WriteLine();
-            }*/
             // build plain text matrix with size
             List<List<int>> plainTextMatrix = createMatrix(plain3, 3, false, false);
-            /*List<List<int>> plainTextMatrix = new List<List<int>>();
-            plainTextMatrix.Add(new List<int> { 5, 5, 19 });
-            plainTextMatrix.Add(new List<int> { 21, 2, 14 });
-            plainTextMatrix.Add(new List<int> { 2, 16, 1 });
-            Console.WriteLine("----");*/
 
             List<List<int>> inversePlainMatrix = getInverseMatrix(plainTextMatrix, 3);
 
             List<List<int>> keyMatrix = multiplyMatrices(cipherTextMatrix, inversePlainMatrix, 3);
-            /*foreach (var row in keyMatrix)
-            {
-                foreach (var num in row)
-                {
-                    Console.Write(num + " ");
-                }
-                Console.WriteLine();
-            }
-            Console.WriteLine("_____");*/
 
             List<int> key = new List<int>();
 
@@ -857,17 +710,7 @@ namespace SecurityLibrary
                 }
             }
 
-            /*List<int> test = Encrypt(plain3, key);
-
-            foreach (var num in test)
-            {
-                Console.Write(num + " ");
-            }
-            Console.WriteLine("\n------");*/
-
             return key;
-            //throw new NotImplementedException();
-
             //throw new NotImplementedException();
         }
 
@@ -895,13 +738,10 @@ namespace SecurityLibrary
                 numbers[pair.Value] = pair.Key;
             }
 
-
-
             capitalCipher = Regex.Replace(capitalCipher, @"\s+", ""); // Removes whitespaces, just in case
 
             foreach (var letter in capitalCipher)
                 cipherTextNumber.Add(letters[letter]);
-
 
             capitalPlain = Regex.Replace(capitalPlain, @"\s+", ""); // Removes whitespaces
 

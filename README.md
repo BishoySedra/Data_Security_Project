@@ -16,3 +16,20 @@ Follow these steps to set up and run the project on your local machine:
 4. Go to the `Test` tab and choose `Test Explorer`.
 5. Right-click on the required algorithm and then choose `Run` to execute all test cases on the chosen one.
 
+## Milestones
+
+### Milestone 1: Implementation of Encryption, Decryption, and Analysis Functions
+
+The primary goal of this milestone is to implement encryption, decryption, and analysis functions for various cryptographic algorithms. The following algorithms are required to be implemented:
+
+- Caesar Cipher
+- Autokey Vigenère Cipher
+- Repeating Key Vigenère Cipher
+- Rail Fence Cipher
+- Columnar Transposition Cipher
+- Monoalphabetic Cipher
+- Hill Cipher
+- Playfair Cipher
+
+**NOTE:** The implementation of the Playfair Cipher Analysis is marked as "OPTIONAL" and comes with BONUS points, making it non-mandatory.
+

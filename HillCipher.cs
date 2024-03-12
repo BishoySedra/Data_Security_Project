@@ -146,7 +146,7 @@ namespace SecurityLibrary
                     }
 
                     if (otherGCDValue != 1)
-                        throw new SystemException();
+                        throw new InvalidAnlysisException();
 
                     while (bValue < 0) // loop until we get a viable `b` value (+ve int)
                     {
@@ -159,6 +159,9 @@ namespace SecurityLibrary
                             bValue = 26 - (int)bRemainder;
                         else mod += 26;
                     }
+
+                    if((bValue == 0) ||determinant3 == 0)
+                        throw new InvalidAnlysisException();
 
                     List<List<int>> adjointMatrix = new List<List<int>>();
                     for (int i = 0; i < matrixSize; i++)

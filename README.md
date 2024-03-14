@@ -22,7 +22,7 @@ Follow these steps to set up and run the project on your local machine:
 
 The primary goal of this milestone is to implement encryption, decryption, and analysis functions for various cryptographic algorithms. The following algorithms are required to be implemented:
 
-- Caesar Cipher
+- Ceasar Cipher
 - Autokey Vigenère Cipher
 - Repeating Key Vigenère Cipher
 - Rail Fence Cipher

@@ -33,3 +33,6 @@ The primary goal of this milestone is to implement encryption, decryption, and a
 
 **NOTE:** The implementation of the Playfair Cipher Analysis is marked as "OPTIONAL" and comes with BONUS points, making it non-mandatory.
 
+### Milestone 2: Implementation of Extended Euclidean, DES, and AES
+
+This milestone focuses on implementing additional encryption and decryption algorithms, including Extended Euclidean, Data Encryption Standard (DES), and Advanced Encryption Standard (AES). These algorithms add to the complexity and security of the encryption methods implemented in Milestone 1.

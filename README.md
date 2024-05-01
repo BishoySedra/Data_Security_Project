@@ -42,7 +42,7 @@ This milestone focuses on implementing additional encryption and decryption algo
 
 These algorithms add to the complexity and security of the encryption methods implemented in Milestone 1.
 
-### Milestone 3: Implementation of RSA, Diffie-Hellman, RC4, ElGamal CryptoSystem "OPTIONAL" and MD5 "Possibly BONUS"
+### Milestone 3: Implementation of RSA, Diffie-Hellman, RC4, ElGamal CryptoSystem "OPTIONAL" and MD5 "Possibly BONUS Not Sure"
 
 In this milestone, the focus shifts to implementing more advanced encryption and cryptographic algorithms, including:
 - RSA (Rivest-Shamir-Adleman)

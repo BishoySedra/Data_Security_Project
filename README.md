@@ -41,3 +41,14 @@ This milestone focuses on implementing additional encryption and decryption algo
 - Advanced Encryption Standard (AES)
 
 These algorithms add to the complexity and security of the encryption methods implemented in Milestone 1.
+
+### Milestone 3: Implementation of RSA, Diffie-Hellman, RC4, ElGamal CryptoSystem "OPTIONAL" and MD5 "Possibly BONUS"
+
+In this milestone, the focus shifts to implementing more advanced encryption and cryptographic algorithms, including:
+- RSA (Rivest-Shamir-Adleman)
+- Diffie-Hellman key exchange
+- RC4 (Rivest Cipher 4)
+- ElGamal Cryptosystem
+
+The implementation of these algorithms further enhances the security and versatility of the encryption techniques employed in the project. Additionally, the implementation of MD5 hashing may be considered for bonus points, providing an extra layer of data integrity verification.
+
